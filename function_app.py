@@ -1,6 +1,6 @@
 import azure.functions as func
 import logging
- 
+ app = func.FunctionApp()
  
 @app.route(route="httpget", methods=["GET"])
 def http_get(req: func.HttpRequest) -> func.HttpResponse:
