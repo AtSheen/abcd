@@ -1,6 +1,7 @@
 import azure.functions as func
 import logging
- app = func.FunctionApp()
+
+app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
  
 @app.route(route="httpget", methods=["GET"])
 def http_get(req: func.HttpRequest) -> func.HttpResponse:
