@@ -69,23 +69,13 @@ def load_pickle_from_blob(blob_name):
     return data
 
 def read_csv_from_blob(container_name, blob_name):
-    import logging
+
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
     from io import StringIO
-    import logging
+
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
-    from typing import Dict, List, Union, Tuple
     # Get a reference to the BlobClient
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=blob_name)
@@ -99,15 +89,7 @@ def read_csv_from_blob(container_name, blob_name):
     return df
 
 def upload_to_blob(file_name, data):
-    import logging
     from azure.storage.blob import BlobServiceClient
-    import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
-    from typing import Dict, List, Union, Tuple
     # Get a reference to the BlobClient
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_name)
@@ -116,14 +98,8 @@ def upload_to_blob(file_name, data):
     blob_client.upload_blob(data, overwrite=True)
 
 def get_data_frame_for_prediction(query, category_config):
-    import logging
-    from azure.storage.blob import BlobServiceClient
+ 
     import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     data = {
         'Company Code': query['company_code'],
         'Vendor Number': query['vendor_number'],
@@ -143,14 +119,7 @@ def get_data_frame_for_prediction(query, category_config):
     return data
 
 def calculate_prediction(model, data_for_model) -> Tuple[str, float]:
-    import logging
-    from azure.storage.blob import BlobServiceClient
-    import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
+
     """
     Calculates the ML prediction and its probability.
 
@@ -168,14 +137,7 @@ def calculate_prediction(model, data_for_model) -> Tuple[str, float]:
     return ml_prediction, ml_prediction_proba
 
 def create_proba_dataframe(model_classes, predict_probas) -> pd.DataFrame:
-    import logging
-    from azure.storage.blob import BlobServiceClient
-    import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
+
     """
     Creates a DataFrame of tax codes and their prediction probabilities.
 
@@ -194,14 +156,7 @@ def create_proba_dataframe(model_classes, predict_probas) -> pd.DataFrame:
     return ml_prediction_proba_df
 
 def track_predictions(model, model_classes, filtered_tax_codes, data_for_model) -> pd.DataFrame:
-    import logging
-    from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     """
     Tracks predictions for filtered tax codes not in model classes.
 
@@ -224,14 +179,6 @@ def track_predictions(model, model_classes, filtered_tax_codes, data_for_model) 
     return pd.DataFrame(prediction_tracker)
 
 def get_ml_prediction(model, data_for_model, filtered_tax_codes: List[str]) -> Dict[str, Union[str, float, List[Dict[str, Union[str, float]]]]]:
-    import logging
-    from azure.storage.blob import BlobServiceClient
-    import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     """
     Predicts tax codes using a machine learning model and returns predictions with probabilities.
 
@@ -266,12 +213,6 @@ def get_ml_prediction(model, data_for_model, filtered_tax_codes: List[str]) -> D
 
 def log_params_and_output_to_blob(query, filtered_tax_codes, output):
     import logging
-    from azure.storage.blob import BlobServiceClient
-    import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
     from io import StringIO
     try:
         df = read_csv_from_blob(container_name, ml_invocations_filename)
@@ -315,13 +256,6 @@ def log_params_and_output_to_blob(query, filtered_tax_codes, output):
 @app.route(route="GetTaxCode")
 def GetTaxCode(req: func.HttpRequest) -> func.HttpResponse:
     import logging
-    from azure.storage.blob import BlobServiceClient
-    import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function processing Tax Code.')
 
     try:
@@ -358,16 +292,12 @@ def GetTaxCode(req: func.HttpRequest) -> func.HttpResponse:
             status_code=500
         )
 
-@app.route(route="GetAttentionListFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetAttentionListFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetAttentionListFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
     from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function to read Attention List Excel file from Blob Storage.')
 
     # Blob storage details
@@ -397,16 +327,12 @@ def GetAttentionListFile(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(f"An error occurred: {e}", exc_info=True)
         return func.HttpResponse(f"Error reading blob: {e}", status_code=500)
 
-@app.route(route="GetIPVatFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetIPVatFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetIPVatFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
     from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function to read IP Vat Issues List CSV file from Blob Storage.')
 
     # Blob storage details
@@ -435,16 +361,12 @@ def GetIPVatFile(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(f"An error occurred: {e}", exc_info=True)
         return func.HttpResponse(f"Error reading blob: {e}", status_code=500)
 
-@app.route(route="GetHistoricalMetaFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetHistoricalMetaFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetHistoricalMetaFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
     from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function to read Historical Metadata CSV file from Blob Storage.')
 
     # Blob storage details
@@ -474,16 +396,12 @@ def GetHistoricalMetaFile(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(f"Error reading blob: {e}", status_code=500)
 
 
-@app.route(route="GetVendorDetailsFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetVendorDetailsFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetVendorDetailsFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
     from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function to read Vendor Info List Excel file from Blob Storage.')
 
     # Blob storage details
@@ -516,16 +434,12 @@ def GetVendorDetailsFile(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(f"Error reading blob: {e}", status_code=500)
 
 
-@app.route(route="GetCompanyCodeDetailsFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetCompanyCodeDetailsFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetCompanyCodeDetailsFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
     from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function to read Company Code Info List Excel file from Blob Storage.')
 
     # Blob storage details
@@ -559,16 +473,12 @@ def GetCompanyCodeDetailsFile(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(f"An error occurred: {e}", exc_info=True)
         return func.HttpResponse(f"Error reading blob: {e}", status_code=500)
 
-@app.route(route="GetTaxCodeDescriptionFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetTaxCodeDescriptionFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetTaxCodeDescriptionFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
     from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function to read Tax Code Description Excel file from Blob Storage.')
 
     # Blob storage details
@@ -603,16 +513,12 @@ def GetTaxCodeDescriptionFile(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(f"An error occurred: {e}", exc_info=True)
         return func.HttpResponse(f"Error reading blob: {e}", status_code=500)
 
-@app.route(route="GetTaxCodeInfoFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetTaxCodeInfoFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetTaxCodeInfoFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
     from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function to read Tax Code Info Excel file from Blob Storage.')
 
     # Blob storage details
@@ -641,16 +547,12 @@ def GetTaxCodeInfoFile(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(f"An error occurred: {e}", exc_info=True)
         return func.HttpResponse(f"Error reading blob: {e}", status_code=500)
 
-@app.route(route="GetLegalEntitiesFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetLegalEntitiesFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetLegalEntitiesFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
     import pandas as pd
-    import numpy as np
     from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function to read Legal Entities CSV file from Blob Storage.')
 
     # Blob storage details
@@ -680,16 +582,10 @@ def GetLegalEntitiesFile(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(f"Error reading blob: {e}", status_code=500)
 
 
-@app.route(route="GetCategoricalConfigFile", auth_level=func.AuthLevel.FUNCTION)
+@app.route(route="GetCategoricalConfigFile", auth_level=func.AuthLevel.ANONYMOUS)
 def GetCategoricalConfigFile(req: func.HttpRequest) -> func.HttpResponse:
     import logging
     from azure.storage.blob import BlobServiceClient
-    import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
     logging.info('Python HTTP trigger function processed a request.')
 
     blob_name = category_config_file_blob_name
@@ -736,13 +632,6 @@ def GetCategoricalConfigFile(req: func.HttpRequest) -> func.HttpResponse:
 @app.route(route="httpget", methods=["GET"])
 def http_get(req: func.HttpRequest) -> func.HttpResponse:
     import logging
-    from azure.storage.blob import BlobServiceClient
-    import pandas as pd
-    import numpy as np
-    from io import BytesIO
-    import joblib
-    import tempfile
-    from io import StringIO
 
     logging.info(f"Processing GET request. Name:")
 
