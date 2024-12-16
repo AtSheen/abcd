@@ -4,7 +4,7 @@ import cachetools
 import json
 import os
 import pandas as pd
-
+import numpy as np
 from typing import Dict, List, Union, Tuple
 cache = cachetools.LRUCache(maxsize=2)
 
